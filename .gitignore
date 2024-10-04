@@ -1,0 +1,8 @@
+data.xlsx
+test.qvw
+data_analysis.qvw
+tmp/
+party_donation/
+candidate_donation/
+*#
+*~

@@ -1,0 +1,117 @@
+///$tab Main
+SET ThousandSep=',';
+SET DecimalSep='.';
+SET MoneyThousandSep=',';
+SET MoneyDecimalSep='.';
+SET MoneyFormat='$#,##0.00;($#,##0.00)';
+SET TimeFormat='h:mm:ss TT';
+SET DateFormat='M/D/YYYY';
+SET TimestampFormat='M/D/YYYY h:mm:ss[.fff] TT';
+SET MonthNames='Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec';
+SET DayNames='Mon;Tue;Wed;Thu;Fri;Sat;Sun';
+SET LongMonthNames='January;February;March;April;May;June;July;August;September;October;November;December';
+SET LongDayNames='Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Sunday';
+SET FirstWeekDay=6;
+SET BrokenWeeks=1;
+SET ReferenceDay=0;
+SET FirstMonthOfYear=1;
+SET CollationLocale='en-US';
+
+///$tab Analysis
+Data:
+NoConcatenate
+LOAD 項目名稱 AS 受款者, 
+     選舉名稱, 
+     申報序號／年度, 
+     交易日期, 
+     收支科目, 
+     IF(Right(收支科目,2) = '支出', '支出', '收入') AS 收支類別, 
+     捐贈者／支出對象, 
+     身分證／統一編號, 
+     NUM(收入金額, '$#,##0;($#,##0)') AS 收入金額, 
+     NUM(支出金額, '$#,##0;($#,##0)') AS 支出金額, 
+     支出用途, 
+     金錢類, 
+     地址, 
+     聯絡電話, 
+     捐贈方式, 
+     存入專戶日期, 
+     [返還/繳庫], 
+     應揭露之支出對象, 
+     支出對象之內部人員姓名, 
+     支出對象之內部人員職稱, 
+     政黨之內部人員姓名, 
+     政黨之內部人員職稱, 
+     關係, 
+     更正註記, 
+     資料更正日期, 
+     西元交易日期, 
+     TEXT(DATE(西元交易日期,'YYYY-MM')) AS 交易月份,
+     存入專戶西元日期, 
+     序號
+FROM
+[.\qvd\data.qvd]
+(qvd);
+
+Accused:
+NoConcatenate
+LOAD 姓名 AS 捐贈者／支出對象, 
+     角色, 
+     備註, 
+     羈押禁見日期, 
+     被告?
+FROM
+[.\qvd\accused.qvd]
+(qvd);
+///$tab Exit
+EXIT SCRIPT;
+///$tab QVD
+for each file in filelist('C:\Users\Joseph\Documents\Testing\ko-wen-je-compaign-finance\data\*.csv')
+    Data:
+    LOAD *, DATE(DATE#((1911 + NUM#(SUBFIELD(交易日期, ' ', 1), '###')) &
+    	SUBFIELD(交易日期, ' ', 3) & SUBFIELD(交易日期, ' ', 5), 'YYYYMMDD'), 'YYYY-MM-DD') AS 西元交易日期,
+    	DATE(DATE#((1911 + NUM#(SUBFIELD(存入專戶日期, ' ', 1), '###')) &
+    	SUBFIELD(存入專戶日期, ' ', 3) & SUBFIELD(存入專戶日期, ' ', 5), 'YYYYMMDD'), 'YYYY-MM-DD') AS 存入專戶西元日期,
+    	RowNo() AS 序號;
+	LOAD 項目名稱, 
+	     選舉名稱, 
+	     申報序號／年度, 
+	     交易日期, 
+	     收支科目, 
+	     捐贈者／支出對象, 
+	     身分證／統一編號, 
+	     收入金額,
+	     支出金額, 
+	     支出用途, 
+	     金錢類, 
+	     地址, 
+	     聯絡電話, 
+	     捐贈方式, 
+	     存入專戶日期, 
+	     [返還/繳庫], 
+	     應揭露之支出對象, 
+	     支出對象之內部人員姓名, 
+	     支出對象之內部人員職稱, 
+	     政黨之內部人員姓名, 
+	     政黨之內部人員職稱, 
+	     關係, 
+	     更正註記, 
+	     資料更正日期
+	FROM [$(file)]
+	(txt, utf8, embedded labels, delimiter is ',', msq);
+next file;
+
+store Data into .\qvd\data.qvd(qvd);
+
+Accused:
+NoConcatenate
+LOAD 姓名, 
+     角色, 
+     備註, 
+     DATE(羈押禁見日期, 'YYYY-MM-DD') AS 羈押禁見日期, 
+     被告?
+FROM
+[C:\Users\Joseph\Documents\Testing\ko-wen-je-compaign-finance\京華城被告.xlsx]
+(ooxml, embedded labels, table is Sheet1);
+
+store Accused into .\qvd\accused.qvd(qvd);
