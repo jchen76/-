@@ -1,8 +1,9 @@
 data.xlsx
-test.qvw
-data_analysis.qvw
+*.qvw
 tmp/
 party_donation/
 candidate_donation/
 *#
 *~
+*.twb
+~*
