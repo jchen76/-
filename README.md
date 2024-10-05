@@ -17,3 +17,5 @@
 
 ## 人事支出
 ![柯文哲政治獻金人事支出](https://github.com/jchen76/ko-wen-je-campaign-finance/blob/main/image/page_6.png "柯文哲政治獻金人事支出")
+
+資料來源: [監察院政治獻金公開查閱平台](https://ardata.cy.gov.tw/home)
