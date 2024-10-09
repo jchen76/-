@@ -12,6 +12,9 @@
 ## 不尋常政治獻金
 ![柯文哲不尋常政治獻金](https://github.com/jchen76/ko-wen-je-campaign-finance/blob/main/image/page_4.png "柯文哲不尋常政治獻金")
 
+## 關係人士政治獻金
+![關係人士政治獻金](https://github.com/jchen76/ko-wen-je-campaign-finance/blob/main/image/page_4_1.png "柯文哲不尋常政治獻金")
+
 ## $99,999 和 $1 政治獻金
 ![柯文哲 $99,999 和 $1 政治獻金](https://github.com/jchen76/ko-wen-je-campaign-finance/blob/main/image/page_5.png "柯文哲 $99,999 和 $1 政治獻金")
 
